@@ -1,0 +1,148 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+<h3 style="color:blue;text-align:center">Client Test App</h3>
+
+<div>
+    <h4>Display All Products</h4>
+    <table id="productTable"></table>
+</div>
+<table>
+    <tr>
+        <td><label>ProductId:</label></td>
+        <td><input type="text" id="txtPid" /></td>
+    </tr>
+    <tr>
+        <td><label>ProductName:</label></td>
+        <td><input type="text" id="txtPName" /></td>
+    </tr>
+
+    <tr>
+        <td colspan="2" style="text-align:center">
+            <input type="button" value="AddProduct" onclick="AddProduct();" />
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" style="text-align:center">
+            <input type="button" value="GetProduct" onclick="GetProductById();" />
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" style="text-align:center">
+            <input type="button" value="EditProduct" onclick="EditProduct();" />
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" style="text-align:center">
+            <input type="button" value="DeleteProduct" onclick="DeleteProduct();" />
+        </td>
+    </tr>
+</table>
+<script>
+
+    $(document).ready(LoadProductsDetails());
+
+    function LoadProductsDetails() {
+        var url = 'https://localhost:44307/api/product';
+
+        $.ajax({
+            url: url,
+            dataType: 'json',
+            type: 'GET',
+            success: function (data) {
+                //clear table if data exist
+                $('#productTable').empty();
+                //add header row
+                var headerrow = '<tr><th> ProductId</th> <th>ProductName</th> <th> Price</th></tr>'
+                $('#productTable').append(headerrow)
+                //return value is json array[{...},{...}]
+                $.each(data, function (index, record) {
+                    console.log(record)
+                    var row = '<tr><td>' + record.ProductId + '</td> <td>' + record.ProductName + '</td> <td>' + record.Price + '</td></tr>'
+                    $('#productTable').append(row)
+                });
+            }
+        })
+    }
+    function AddProduct() {
+        //var pid = $('#txtPid').val();
+        var pname = $('#txtPName').val();
+       
+        //JavaScript object
+     //   var product = {
+           // ProductId: pid, ProductName: pname"};
+        var product = {ProductName:pname}
+
+        $.ajax({
+                type: "POST",
+                url: "https://localhost:44307/api/product/",
+                contentType: "application/json;charset=utf-8",
+                datatype: "json",
+                data: JSON.stringify(product),
+                success: function () {
+                     LoadProductsDetails();
+                },
+                error: function (jqxhr) {
+                    alert("error:" + jqxhr.status + ":" + jqxhr.statusText);
+                }
+            });
+    }
+
+    function GetProductById() {
+        var id = $('#txtPid').val();
+        $.ajax({
+            type: "GET",
+            url: "https://localhost:44307/api/product/"+id,
+            
+            datatype: "json",
+            
+            success: function (data) {
+                console.log(data);
+            },
+            error: function (jqxhr) {
+                alert("error:" + jqxhr.status + ":" + jqxhr.statusText);
+            }
+        });
+    }
+
+    function EditProduct() {
+        var pname = $('#txtPname').val();
+        var product = { ProductName: pname }
+    }
+
+    $.ajax({
+        type: "PUT",
+        url: "https://localhost:44307/api/product/"+pid,
+        contentType: "application/json;charset=utf-8",
+        datatype: "json",
+        data: JSON.stringify(product),
+        success: function () {
+            LoadProductsDetails();
+        },
+        error: function (jqxhr) {
+            alert("error:" + jqxhr.status + ":" + jqxhr.statusText);
+        }
+    });
+        }
+
+    function DeleteProduct() {
+        var id = $('#txtPid').val();
+    }
+    $.ajax({
+        type: "DELETE",
+        url: "https://localhost:44307/api/product/"+id,
+        
+        datatype: "json",
+       
+        success: function () {
+            LoadProductsDetails();
+        },
+        error: function (jqxhr) {
+            alert("error:" + jqxhr.status + ":" + jqxhr.statusText);
+        }
+    });
+        }
+    
+</script>

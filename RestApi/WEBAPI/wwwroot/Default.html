@@ -1,0 +1,51 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+            integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+            crossorigin="anonymous"></script>
+</head>
+<body>
+    <h3 id=" header3" style="text-align:center ">Default page</h3>
+    <!-- <h3>Learning JQuery</h3>
+     <h3 class="c1">css class demo</h3>-->
+
+    <div>
+        <h4>Display All Products</h4>
+        <table id="productTable"></table>
+    </div>
+    <script>
+        $(document).ready(LoadProductsDetails());
+
+        function LoadProductsDetails() {
+            var url = 'https://localhost:44307/api/product';
+
+            $.ajax({
+                url: url,
+                dataType: 'json',
+                type: 'GET',
+                success: function (data) {
+                    //clear table if data exist
+                    $('#productTable').empty();
+                    //add header row
+                    var headerrow = '<tr><th> ProductId</th> <th>ProductName</th> <th> Price</th></tr>'
+                    $('#productTable').append(headerrow)
+                       //return value is json array[{...},{...}]
+                    $.each(data, function (index, record) {
+                        console.log(record)
+                        var row = '<tr><td>' + record.ProductId + '</td> <td>' + record.ProductName + '</td> <td>' + record.Price + '</td></tr>'
+                        $('#productTable').append(row)
+                    });
+                }
+            })
+        }
+    </script>
+
+    <!-- <script> $(document).ready(function () {
+             $("#header3").css('color', 'red')
+               $(".c1").css('color','red')
+             })</script>-->
+</body>
+</html>
